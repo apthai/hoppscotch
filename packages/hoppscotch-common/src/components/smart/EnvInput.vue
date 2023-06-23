@@ -1,6 +1,6 @@
 <template>
   <div class="autocomplete-wrapper">
-    <div class="absolute inset-0 flex flex-1 overflow-x-hidden">
+    <div class="absolute inset-0 flex flex-1 overflow-x-auto">
       <div
         ref="editor"
         :placeholder="placeholder"
@@ -21,7 +21,7 @@
         v-for="(suggestion, index) in suggestions"
         :key="`suggestion-${index}`"
         :class="{ active: currentSuggestionIndex === index }"
-        @click.prevent="updateModelValue(suggestion)"
+        @click="updateModelValue(suggestion)"
       >
         <span class="truncate py-0.5">
           {{ suggestion }}
@@ -149,9 +149,9 @@ const handleKeystroke = (ev: KeyboardEvent) => {
   if (["ArrowDown", "ArrowUp", "Enter", "Tab", "Escape"].includes(ev.key)) {
     ev.preventDefault()
   }
-  if (["ArrowDown"].includes(ev.key) && suggestions.value.length > 0) {
-    showSuggestionPopover.value = true
-  }
+
+  showSuggestionPopover.value = true
+
   if (
     ["Enter", "Tab"].includes(ev.key) &&
     suggestions.value.length > 0 &&
@@ -172,6 +172,7 @@ const handleKeystroke = (ev: KeyboardEvent) => {
       })
     })
   }
+
   if (ev.key === "ArrowDown") {
     scrollActiveElIntoView()
 
@@ -182,6 +183,7 @@ const handleKeystroke = (ev: KeyboardEvent) => {
 
     emit("keydown", ev)
   }
+
   if (ev.key === "ArrowUp") {
     scrollActiveElIntoView()
 
@@ -192,17 +194,19 @@ const handleKeystroke = (ev: KeyboardEvent) => {
 
     emit("keyup", ev)
   }
+
   if (ev.key === "Enter") {
     emit("enter", ev)
+    showSuggestionPopover.value = false
   }
 
   if (ev.key === "Escape") {
     showSuggestionPopover.value = false
   }
 
-  // used to scroll to the first suggestion when right arrow is pressed
-  if (ev.key === "ArrowRight") {
-    if (suggestions.value.length > 0 && showSuggestionPopover.value) {
+  // used to scroll to the first suggestion when left arrow is pressed
+  if (ev.key === "ArrowLeft") {
+    if (suggestions.value.length > 0) {
       currentSuggestionIndex.value = 0
       nextTick(() => {
         scrollActiveElIntoView()
@@ -210,9 +214,9 @@ const handleKeystroke = (ev: KeyboardEvent) => {
     }
   }
 
-  // used to scroll to the last suggestion when left arrow is pressed
-  if (ev.key === "ArrowLeft") {
-    if (suggestions.value.length > 0 && showSuggestionPopover.value) {
+  // used to scroll to the last suggestion when right arrow is pressed
+  if (ev.key === "ArrowRight") {
+    if (suggestions.value.length > 0) {
       currentSuggestionIndex.value = suggestions.value.length - 1
       nextTick(() => {
         scrollActiveElIntoView()
@@ -220,6 +224,16 @@ const handleKeystroke = (ev: KeyboardEvent) => {
     }
   }
 }
+
+// reset currentSuggestionIndex showSuggestionPopover is false
+watch(
+  () => showSuggestionPopover.value,
+  (newVal) => {
+    if (!newVal) {
+      currentSuggestionIndex.value = -1
+    }
+  }
+)
 
 /**
  * Used to scroll the active suggestion into view
