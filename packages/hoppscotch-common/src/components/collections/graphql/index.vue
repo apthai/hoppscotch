@@ -60,35 +60,27 @@
         @select="$emit('select', $event)"
       />
     </div>
-    <div
+    <HoppSmartPlaceholder
       v-if="collections.length === 0"
-      class="flex flex-col items-center justify-center p-4 text-secondaryLight"
+      :src="`/images/states/${colorMode.value}/pack.svg`"
+      :alt="`${t('empty.collections')}`"
+      :text="t('empty.collections')"
     >
-      <img
-        :src="`/images/states/${colorMode.value}/pack.svg`"
-        loading="lazy"
-        class="inline-flex flex-col object-contain object-center w-16 h-16 my-4"
-        :alt="t('empty.collections')"
-      />
-      <span class="pb-4 text-center">
-        {{ t("empty.collections") }}
-      </span>
       <HoppButtonSecondary
         :label="t('add.new')"
         filled
         outline
         @click="displayModalAdd(true)"
       />
-    </div>
-    <div
+    </HoppSmartPlaceholder>
+    <HoppSmartPlaceholder
       v-if="!(filteredCollections.length !== 0 || collections.length === 0)"
-      class="flex flex-col items-center justify-center p-4 text-secondaryLight"
+      :text="`${t('state.nothing_found')} ‟${filterText}”`"
     >
-      <icon-lucide-search class="pb-2 opacity-75 svg-icons" />
-      <span class="my-2 text-center">
-        {{ t("state.nothing_found") }} "{{ filterText }}"
-      </span>
-    </div>
+      <template #icon>
+        <icon-lucide-search class="pb-2 opacity-75 svg-icons" />
+      </template>
+    </HoppSmartPlaceholder>
     <CollectionsGraphqlAdd
       :show="showModalAdd"
       @hide-modal="displayModalAdd(false)"
@@ -153,6 +145,7 @@ import IconArchive from "~icons/lucide/archive"
 import { useI18n } from "@composables/i18n"
 import { useReadonlyStream } from "@composables/stream"
 import { useColorMode } from "@composables/theming"
+import { platform } from "~/platform"
 
 export default defineComponent({
   props: {
@@ -285,6 +278,13 @@ export default defineComponent({
         response: "",
       })
 
+      platform.analytics?.logEvent({
+        type: "HOPP_SAVE_REQUEST",
+        platform: "gql",
+        createdNow: true,
+        workspaceType: "personal",
+      })
+
       this.displayModalAddRequest(false)
     },
     addRequest(payload) {
@@ -294,6 +294,14 @@ export default defineComponent({
     },
     onAddFolder({ name, path }) {
       addGraphqlFolder(name, path)
+
+      platform.analytics?.logEvent({
+        type: "HOPP_CREATE_COLLECTION",
+        isRootCollection: false,
+        platform: "gql",
+        workspaceType: "personal",
+      })
+
       this.displayModalAddFolder(false)
     },
     addFolder(payload) {

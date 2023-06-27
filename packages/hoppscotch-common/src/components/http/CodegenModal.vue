@@ -56,20 +56,19 @@
                     }
                   "
                 />
-                <div
+                <HoppSmartPlaceholder
                   v-if="
                     !(
                       filteredCodegenDefinitions.length !== 0 ||
                       CodegenDefinitions.length === 0
                     )
                   "
-                  class="flex flex-col items-center justify-center p-4 text-secondaryLight"
+                  :text="`${t('state.nothing_found')} ‟${searchQuery}”`"
                 >
-                  <icon-lucide-search class="pb-2 opacity-75 svg-icons" />
-                  <span class="my-2 text-center">
-                    {{ t("state.nothing_found") }} "{{ searchQuery }}"
-                  </span>
-                </div>
+                  <template #icon>
+                    <icon-lucide-search class="pb-2 opacity-75 svg-icons" />
+                  </template>
+                </HoppSmartPlaceholder>
               </div>
             </div>
           </template>
@@ -165,6 +164,7 @@ import IconCheck from "~icons/lucide/check"
 import IconWrapText from "~icons/lucide/wrap-text"
 import { currentActiveTab } from "~/helpers/rest/tab"
 import cloneDeep from "lodash-es/cloneDeep"
+import { platform } from "~/platform"
 
 const t = useI18n()
 
@@ -248,6 +248,10 @@ watch(
   (goingToShow) => {
     if (goingToShow) {
       request.value = cloneDeep(currentActiveTab.value.document.request)
+
+      platform.analytics?.logEvent({
+        type: "HOPP_REST_CODEGEN_OPENED",
+      })
     }
   }
 )

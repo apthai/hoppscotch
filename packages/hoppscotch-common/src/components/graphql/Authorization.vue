@@ -114,19 +114,12 @@
         />
       </div>
     </div>
-    <div
+    <HoppSmartPlaceholder
       v-if="authType === 'none'"
-      class="flex flex-col items-center justify-center p-4 text-secondaryLight"
+      :src="`/images/states/${colorMode.value}/login.svg`"
+      :alt="`${t('empty.authorization')}`"
+      :text="t('empty.authorization')"
     >
-      <img
-        :src="`/images/states/${colorMode.value}/login.svg`"
-        loading="lazy"
-        class="inline-flex flex-col object-contain object-center w-16 h-16 my-4"
-        :alt="`${t('empty.authorization')}`"
-      />
-      <span class="pb-4 text-center">
-        {{ t("empty.authorization") }}
-      </span>
       <HoppButtonSecondary
         outline
         :label="t('app.documentation')"
@@ -136,40 +129,58 @@
         reverse
         class="mb-4"
       />
-    </div>
+    </HoppSmartPlaceholder>
     <div v-else class="flex flex-1 border-b border-dividerLight">
       <div class="w-2/3 border-r border-dividerLight">
         <div v-if="authType === 'basic'">
           <div class="flex flex-1 border-b border-dividerLight">
             <SmartEnvInput
               v-model="basicUsername"
+              :environment-highlights="false"
               :placeholder="t('authorization.username')"
             />
           </div>
           <div class="flex flex-1 border-b border-dividerLight">
             <SmartEnvInput
               v-model="basicPassword"
+              :environment-highlights="false"
               :placeholder="t('authorization.password')"
             />
           </div>
         </div>
         <div v-if="authType === 'bearer'">
           <div class="flex flex-1 border-b border-dividerLight">
-            <SmartEnvInput v-model="bearerToken" placeholder="Token" />
+            <SmartEnvInput
+              v-model="bearerToken"
+              :environment-highlights="false"
+              placeholder="Token"
+            />
           </div>
         </div>
         <div v-if="authType === 'oauth-2'">
           <div class="flex flex-1 border-b border-dividerLight">
-            <SmartEnvInput v-model="oauth2Token" placeholder="Token" />
+            <SmartEnvInput
+              v-model="oauth2Token"
+              :environment-highlights="false"
+              placeholder="Token"
+            />
           </div>
           <HttpOAuth2Authorization />
         </div>
         <div v-if="authType === 'api-key'">
           <div class="flex flex-1 border-b border-dividerLight">
-            <SmartEnvInput v-model="apiKey" placeholder="Key" />
+            <SmartEnvInput
+              v-model="apiKey"
+              :environment-highlights="false"
+              placeholder="Key"
+            />
           </div>
           <div class="flex flex-1 border-b border-dividerLight">
-            <SmartEnvInput v-model="apiValue" placeholder="Value" />
+            <SmartEnvInput
+              v-model="apiValue"
+              :environment-highlights="false"
+              placeholder="Value"
+            />
           </div>
           <div class="flex items-center border-b border-dividerLight">
             <span class="flex items-center">

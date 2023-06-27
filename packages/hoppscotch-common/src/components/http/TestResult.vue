@@ -28,9 +28,11 @@
               class="flex items-center justify-between flex-1 min-w-0 transition cursor-pointer focus:outline-none text-secondaryLight text-tiny group"
             >
               <span
-                class="inline-flex items-center justify-center px-4 py-2 transition group-hover:text-secondary"
+                class="inline-flex items-center justify-center px-4 py-2 transition group-hover:text-secondary truncate"
               >
-                <icon-lucide-chevron-right class="mr-2 indicator" />
+                <icon-lucide-chevron-right
+                  class="mr-2 indicator flex flex-shrink-0"
+                />
                 <span class="truncate capitalize-first">
                   {{ t("environment.title") }}
                 </span>
@@ -151,41 +153,21 @@
         </div>
       </div>
     </div>
-    <div
+    <HoppSmartPlaceholder
       v-else-if="testResults && testResults.scriptError"
-      class="flex flex-col items-center justify-center flex-1 p-4"
+      :src="`/images/states/${colorMode.value}/youre_lost.svg`"
+      :alt="`${t('error.test_script_fail')}`"
+      :heading="t('error.test_script_fail')"
+      :text="t('helpers.test_script_fail')"
     >
-      <img
-        :src="`/images/states/${colorMode.value}/youre_lost.svg`"
-        loading="lazy"
-        class="inline-flex flex-col object-contain object-center w-32 h-32 my-4"
-        :alt="`${t('error.test_script_fail')}`"
-      />
-      <span class="mb-2 font-semibold text-center">
-        {{ t("error.test_script_fail") }}
-      </span>
-      <span
-        class="max-w-sm mb-6 text-center whitespace-normal text-secondaryLight"
-      >
-        {{ t("helpers.test_script_fail") }}
-      </span>
-    </div>
-    <div
+    </HoppSmartPlaceholder>
+    <HoppSmartPlaceholder
       v-else
-      class="flex flex-col items-center justify-center p-4 text-secondaryLight"
+      :src="`/images/states/${colorMode.value}/validation.svg`"
+      :alt="`${t('empty.tests')}`"
+      :heading="t('empty.tests')"
+      :text="t('helpers.tests')"
     >
-      <img
-        :src="`/images/states/${colorMode.value}/validation.svg`"
-        loading="lazy"
-        class="inline-flex flex-col object-contain object-center w-16 h-16 my-4"
-        :alt="`${t('empty.tests')}`"
-      />
-      <span class="pb-2 text-center">
-        {{ t("empty.tests") }}
-      </span>
-      <span class="pb-4 text-center">
-        {{ t("helpers.tests") }}
-      </span>
       <HoppButtonSecondary
         outline
         :label="`${t('action.learn_more')}`"
@@ -195,7 +177,7 @@
         reverse
         class="my-4"
       />
-    </div>
+    </HoppSmartPlaceholder>
     <EnvironmentsMyDetails
       :show="showMyEnvironmentDetailsModal"
       action="new"

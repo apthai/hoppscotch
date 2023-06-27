@@ -83,19 +83,12 @@
               />
             </div>
           </div>
-          <div
+          <HoppSmartPlaceholder
             v-if="vars.length === 0"
-            class="flex flex-col items-center justify-center p-4 text-secondaryLight"
+            :src="`/images/states/${colorMode.value}/blockchain.svg`"
+            :alt="`${t('empty.environments')}`"
+            :text="t('empty.environments')"
           >
-            <img
-              :src="`/images/states/${colorMode.value}/blockchain.svg`"
-              loading="lazy"
-              class="inline-flex flex-col object-contain object-center w-16 h-16 my-4"
-              :alt="`${t('empty.environments')}`"
-            />
-            <span class="pb-4 text-center">
-              {{ t("empty.environments") }}
-            </span>
             <HoppButtonSecondary
               v-if="isViewer"
               disabled
@@ -110,7 +103,7 @@
               class="mb-4"
               @click="addEnvironmentVariable"
             />
-          </div>
+          </HoppSmartPlaceholder>
         </div>
       </div>
     </template>
@@ -156,6 +149,7 @@ import IconTrash from "~icons/lucide/trash"
 import IconTrash2 from "~icons/lucide/trash-2"
 import IconDone from "~icons/lucide/check"
 import IconPlus from "~icons/lucide/plus"
+import { platform } from "~/platform"
 
 type EnvironmentVariable = {
   id: number
@@ -294,6 +288,11 @@ const saveEnvironment = async () => {
   )
 
   if (props.action === "new") {
+    platform.analytics?.logEvent({
+      type: "HOPP_CREATE_ENVIRONMENT",
+      workspaceType: "team",
+    })
+
     await pipe(
       createTeamEnvironment(
         JSON.stringify(filterdVariables),
